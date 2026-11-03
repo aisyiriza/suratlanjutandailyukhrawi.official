@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#f8dfe7">
-<title>Surat untuk Bunda | Daily Ukhrawi</title>
+<title>Surat Manis untuk Bunda | Daily Ukhrawi</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&family=Sacramento&display=swap');
 *{box-sizing:border-box}
@@ -60,3 +60,78 @@ body{
  <span class="float f1">🌸</span><span class="float f2">♡</span><span class="float f3">✿</span><span class="float f4">✨</span>
  <div class="top-flower">🌷 ♡ 🌷</div>
  <div class="brand">DAILY UKHRAWI</div>
+ <p class="tagline">Sepucuk surat kecil, penuh doa dan harapan 🤍</p>
+
+ <div class="scene" id="scene">
+  <article class="letter" id="letter" aria-label="Isi pesan untuk Bunda">
+   <div class="letter-inner">
+    <h1>Pesan Kecil untuk Bunda</h1>
+    <div class="subtitle">DENGAN HANGAT & KASIH SAYANG ✧</div>
+    <p class="salute">Assalamu’alaikum warahmatullahi wabarakatuh, Bunda.</p>
+    <p>Alhamdulillah, senang sekali melihat semangat Ananda dalam belajar Tahsin bersama Daily Ukhrawi. 🌷</p>
+    <p>Setiap pertemuan adalah bagian dari proses Ananda untuk semakin mengenal dan memperbaiki bacaan Al-Qur’an.</p>
+    <p>Kami berharap perjalanan baik ini bisa terus berlanjut, agar apa yang sudah dipelajari tidak berhenti sampai di sini dan Ananda semakin berkembang dalam setiap pertemuannya.</p>
+    <p>Alhamdulillah, setelah kami tanyakan kepada Ananda, ternyata Ananda masih memiliki keinginan dan semangat untuk mengikuti pembelajaran Tahsin pada pertemuan selanjutnya. MasyaAllah, semoga semangat baik ini terus terjaga. 🤍</p>
+    <p class="question">Bagaimana, Bunda? Apakah kita lanjutkan kembali perjalanan belajar Tahsin Ananda? 🌸</p>
+    <p>Terima kasih sudah menjadi bagian dari keluarga belajar Daily Ukhrawi.</p>
+    <p class="signoff">Wassalamu’alaikum warahmatullahi wabarakatuh.</p>
+    <p class="signature">Salam hangat, Daily Ukhrawi ♡</p>
+   </div>
+  </article>
+  <button class="envelope" id="envelope" type="button" aria-label="Tekan untuk membuka atau menutup amplop">
+   <span class="env-back"></span><span class="env-front"></span><span class="env-flap"></span>
+   <span class="seal">♡</span><span class="tap-label" id="tapLabel">TEKAN UNTUK MEMBUKA SURAT</span>
+  </button>
+ </div>
+ <div class="controls">
+  <button class="primary" type="button" id="openBtn">♡ Buka surat</button>
+  <button type="button" id="closeBtn">Tutup amplop ✧</button>
+ </div>
+ <p class="note">Surat terbuka otomatis dan bergerak perlahan. Bunda juga bisa scroll sendiri. Tekan amplop untuk menutupnya kapan saja. Amplop akan menutup otomatis setelah 60 detik.</p>
+</div>
+<script>
+(() => {
+ const scene=document.getElementById('scene'),letter=document.getElementById('letter');
+ const envelope=document.getElementById('envelope'),tapLabel=document.getElementById('tapLabel');
+ let closeTimer=null,scrollFrame=null,userInteracting=false,interactionTimer=null;
+ function stopAutoScroll(){if(scrollFrame)cancelAnimationFrame(scrollFrame);scrollFrame=null}
+ function startAutoScroll(){
+  stopAutoScroll();let direction=1,last=0;const speed=12;
+  function step(now){
+   if(!scene.classList.contains('open'))return;
+   if(!userInteracting&&now-last>16){
+    const delta=last?Math.min((now-last)/1000,.05):0;
+    letter.scrollTop+=direction*speed*delta;
+    if(letter.scrollTop+letter.clientHeight>=letter.scrollHeight-1)direction=-1;
+    if(letter.scrollTop<=0)direction=1;
+   }
+   last=now;scrollFrame=requestAnimationFrame(step);
+  }
+  scrollFrame=requestAnimationFrame(step);
+ }
+ function closeEnvelope(){
+  clearTimeout(closeTimer);stopAutoScroll();scene.classList.remove('open');letter.classList.remove('open');
+  letter.scrollTop=0;tapLabel.textContent='TEKAN UNTUK MEMBUKA SURAT';
+ }
+ function scheduleClose(){clearTimeout(closeTimer);closeTimer=setTimeout(closeEnvelope,60000)}
+ function openEnvelope(){
+  clearTimeout(closeTimer);scene.classList.add('open');letter.classList.add('open');
+  tapLabel.textContent='TEKAN UNTUK MENUTUP SURAT';startAutoScroll();scheduleClose();
+ }
+ envelope.addEventListener('click',()=>scene.classList.contains('open')?closeEnvelope():openEnvelope());
+ document.getElementById('openBtn').addEventListener('click',openEnvelope);
+ document.getElementById('closeBtn').addEventListener('click',closeEnvelope);
+ function manualScroll(){
+  userInteracting=true;clearTimeout(interactionTimer);
+  interactionTimer=setTimeout(()=>userInteracting=false,3500);scheduleClose();
+ }
+ letter.addEventListener('wheel',manualScroll,{passive:true});
+ letter.addEventListener('touchstart',manualScroll,{passive:true});
+ letter.addEventListener('touchmove',manualScroll,{passive:true});
+ letter.addEventListener('pointerdown',manualScroll);
+ letter.addEventListener('keydown',manualScroll);
+ window.addEventListener('load',()=>setTimeout(openEnvelope,900));
+})();
+</script>
+</body>
+</html>
